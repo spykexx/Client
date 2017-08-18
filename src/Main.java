@@ -14,6 +14,7 @@ public class Main {
         g.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         g.setResizable(false);
         g.setSize(800,400);
+        g.setLocationRelativeTo(null);
         g.setVisible(true);
         //Connection connect = new Connection();
     }

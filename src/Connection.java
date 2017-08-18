@@ -10,22 +10,30 @@ public class Connection {
         private ObjectOutputStream out = null;
         private List<Customer> customerL = null;
         private List<Purchase> purchaseL = null;
+        enum reqTypes {initial, customer, purchase, complete}
     public Connection() throws Exception{
+
         }
     public Connection(Customer e, Purchase p) throws Exception{
         socket = new Socket();
         socket.connect(ISA);
+
+        send(reqTypes.initial);
         receive();
         if(customerL.size() != 0) {
             e.setCustNumber(customerL.get(customerL.size() - 1).getCustNumber() + 1);
             p.setTransactionID(purchaseL.get(purchaseL.size() - 1).getTransactionID() + 1);
+
+
         }else{
             e.setCustNumber(1);
             p.setTransactionID(1);
         }
-        send(e);
-        send(p);
+        send(e, p, reqTypes.complete);
+
         receive();
+        //send(p);
+        //receive();
     }
     public void receive() throws Exception{
         in = new ObjectInputStream(socket.getInputStream());
@@ -33,14 +41,16 @@ public class Connection {
         purchaseL = (List<Purchase>) in.readObject();
 
     }
-    public void send(Customer e) throws Exception{
+    public void send(Customer e, Purchase p, reqTypes i) throws Exception{
         out = new ObjectOutputStream(socket.getOutputStream());
+        out.writeObject(i);
         out.writeObject(e);
+        out.writeObject(p);
         out.flush();
     }
-    public void send(Purchase p)throws Exception{
+    public void send(reqTypes i)throws Exception{
         out = new ObjectOutputStream(socket.getOutputStream());
-        out.writeObject(p);
+        out.writeObject(i);
         out.flush();
     }
 

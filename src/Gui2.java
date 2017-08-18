@@ -21,11 +21,11 @@ public class Gui2 extends JFrame {
     private Object[] data = new Object[5];
     private String[] colName = {"ID", "First Name", "Last Name", "Description", "Price"};
     DefaultTableModel tableModel;
+    Connection connect;
 
-    public Gui2() {
+    public Gui2() throws Exception {
         $$$setupUI$$$();
         setContentPane(master);
-
         submit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -37,8 +37,8 @@ public class Gui2 extends JFrame {
                     customer = new Customer(getFirstName().getText(), getLastName().getText());
                     purchase = new Purchase(getDescription().getText(), Double.parseDouble(getPrice().getText()));
                     try {
-                        Connection connect = new Connection(returnCustomer(), returnPurchase());
-                        tableModel.setRowCount(0);
+                        connect = new Connection(returnCustomer(), returnPurchase());
+                        /*tableModel.setRowCount(0);
                         for (int i = 0; i < connect.returnCust().size(); i++) {
                             data[0] = connect.returnCust().get(i).getCustNumber();
                             data[1] = connect.returnCust().get(i).getFirstName();
@@ -47,7 +47,8 @@ public class Gui2 extends JFrame {
                             data[4] = connect.returnPur().get(i).getPrice();
                             tableModel.addRow(data);
 
-                        }
+                        }*/
+                        setTable();
 
                     } catch (Exception i) {
                         i.printStackTrace();
@@ -55,6 +56,19 @@ public class Gui2 extends JFrame {
                 }
             }
         });
+    }
+
+    public void setTable() {
+        tableModel.setRowCount(0);
+        for (int i = 0; i < connect.returnCust().size(); i++) {
+            data[0] = connect.returnCust().get(i).getCustNumber();
+            data[1] = connect.returnCust().get(i).getFirstName();
+            data[2] = connect.returnCust().get(i).getLastName();
+            data[3] = connect.returnPur().get(i).getDescription();
+            data[4] = connect.returnPur().get(i).getPrice();
+            tableModel.addRow(data);
+
+        }
     }
 
     public Customer returnCustomer() {
